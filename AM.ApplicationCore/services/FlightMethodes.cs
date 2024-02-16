@@ -28,7 +28,7 @@ namespace AM.ApplicationCore.services
 
         public List<DateTime> GetFlightDates(string des)
         {
-            List<DateTime> fDesitaion = new List<DateTime>();
+            IList<DateTime> fDesitaion = new List<DateTime>();
             foreach (Flight f in Flights)
             {
                 if (f.Destination == des)
@@ -85,21 +85,50 @@ namespace AM.ApplicationCore.services
 
         public int ProgrammedFlightNumber(DateTime startDate)
         {
+            
             DateTime endDate = startDate.AddDays(7);
-
+            /*
             var numberOfFlights = (from f in Flights
                                    where f.FlightDate >= startDate && f.FlightDate < endDate
                                    select f).Count();
+            */
 
-            return numberOfFlights;
+            return Flights.Count(f=> f.FlightDate >= startDate && f.FlightDate < endDate);
         }
 
         public double DurationAverage(string destination)
         {
-            var averageDuration = Flights.Where(f => f.Destination == destination)
+            return Flights.Where(f => f.Destination == destination)
                                          .Average(f => f.EstimatedDuration);
 
-            return averageDuration;
+           
         }
+
+        public List<Flight> OrderedDurationFlights()
+        {
+            var query = from f in Flights
+                        orderby f.EstimatedDuration descending
+                        select f;
+            return query.ToList();
+        }
+
+        public IEnumerable<Traveller> SeniorTravellers(Flight flight)
+        {
+            var query = from p in flight.Passengers.OfType<Traveller>()
+                        orderby p.Birthdate
+                        select p;
+
+            return query.Take(3);
+
+        }
+
+        public IEnumerable<IGrouping<string, Flight>> DestinationGroupedFlights()
+        {
+            var query = from f in Flights
+                        group f by f.Destination;
+
+            return query;
+        }
+
     }
 }

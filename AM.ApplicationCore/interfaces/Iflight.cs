@@ -19,5 +19,12 @@ namespace AM.ApplicationCore.interfaces
 
         public double DurationAverage(string destination);
 
+        public List<Flight> OrderedDurationFlights();
+
+        public IEnumerable<Traveller> SeniorTravellers(Flight flight);
+
+        public IEnumerable<IGrouping<string, Flight>> DestinationGroupedFlights();
+
+
     }
 }
