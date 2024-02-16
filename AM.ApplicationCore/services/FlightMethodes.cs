@@ -3,6 +3,7 @@ using AM.ApplicationCore.interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -72,16 +73,8 @@ namespace AM.ApplicationCore.services
 
 
 
-        public void ShowFlightDetails(Plane plane)
-        {
-            var flightDetails = from flight in plane.Flights
-                                select new { flight.FlightDate,  flight.Destination };
-            Console.WriteLine($"Flight details for Plane {plane.PlanedId} ({plane.PlanType}):");
-            foreach (var detail in flightDetails)
-            {
-                Console.WriteLine($"Date: {detail.FlightDate}, Destination: {detail.Destination}");
-            }
-        }
+  
+        
 
         public int ProgrammedFlightNumber(DateTime startDate)
         {
@@ -93,7 +86,7 @@ namespace AM.ApplicationCore.services
                                    select f).Count();
             */
 
-            return Flights.Count(f=> f.FlightDate >= startDate && f.FlightDate < endDate);
+            return Flights.Count(f => f.FlightDate >= startDate && f.FlightDate < endDate);
         }
 
         public double DurationAverage(string destination)
@@ -101,24 +94,31 @@ namespace AM.ApplicationCore.services
             return Flights.Where(f => f.Destination == destination)
                                          .Average(f => f.EstimatedDuration);
 
-           
+
         }
 
         public List<Flight> OrderedDurationFlights()
         {
+            return Flights.OrderByDescending(f => f.EstimatedDuration).ToList();
+            /*
             var query = from f in Flights
                         orderby f.EstimatedDuration descending
                         select f;
             return query.ToList();
+            */
         }
 
         public IEnumerable<Traveller> SeniorTravellers(Flight flight)
         {
+
+            return flight.Passengers.OfType<Traveller>().OrderBy(p=> p.Birthdate).Take(3);
+            /*
             var query = from p in flight.Passengers.OfType<Traveller>()
                         orderby p.Birthdate
                         select p;
 
             return query.Take(3);
+            */
 
         }
 
@@ -126,9 +126,27 @@ namespace AM.ApplicationCore.services
         {
             var query = from f in Flights
                         group f by f.Destination;
-
+            foreach (var item in query)
+            {
+             Console.WriteLine($"Destination {item.Key}");
+                foreach(var detail in item)
+                {
+                    Console.WriteLine($"Destination {detail.FlightId}");
+                }
+            }
             return query;
         }
 
+        public void ShowFlightDetails(Domain.Plane plane)
+        {
+
+            var flightDetails = from flight in plane.Flights
+                                select new { flight.FlightDate, flight.Destination };
+            Console.WriteLine($"Flight details for Plane {plane.PlanedId} ({plane.PlanType}):");
+            foreach (var detail in flightDetails)
+            {
+                Console.WriteLine($"Date: {detail.FlightDate}, Destination: {detail.Destination}");
+            }
+        }
     }
 }

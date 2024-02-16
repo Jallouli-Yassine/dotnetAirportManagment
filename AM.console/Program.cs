@@ -12,6 +12,22 @@ Console.WriteLine("dest : "+f1.Destination);
 */
 
 FlightMethodes flightMethodes = new ();
+flightMethodes.Flights = TestData.listFlights;
+
+Console.WriteLine("**************** methode ShowFlightDetails ****************");
+//flightMethodes.ShowFlightDetails(TestData.BoingPlane);
+
+Console.WriteLine("**************** methode DurationAverage ****************");
+//Console.WriteLine(flightMethodes.DurationAverage("Paris"));
+
+Console.WriteLine("**************** methode SeniorTravellers ****************");
+foreach(var item in flightMethodes.SeniorTravellers(TestData.flight1))
+{
+    Console.WriteLine(item.Birthdate);
+};
+
+Console.WriteLine("**************** methode DestinationGroupedFlights ****************");
+flightMethodes.DestinationGroupedFlights();
 
 Flight f4 = new()
 {
@@ -19,6 +35,9 @@ Flight f4 = new()
     Destination = "sfax", 
     Dparture = "dehe",
 
+
 };
 
-Console.WriteLine(f4.Destination);
+
+
+//Console.WriteLine(f4.Destination);
